@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SQL Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+        }
+        
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        .generated-sql {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: lightgray;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+    
+    <script>
+        function generateSQL() {
+            const validationLogic = document.getElementById("validation-logic").value;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    const generatedSQL = this.responseText.substring(16);
+                    document.getElementById("generated-sql").innerHTML = generatedSQL;
+                }
+            };
+            xhr.send(`validation_logic=${validationLogic}`);
+        }
+    </script>
+    
+</head>
+<body>
+    <h1>SQL Generator</h1>
+    <form method="post">
+        Validation logic: <input type="text" name="validation_logic">
+        <input type="submit" value="Generate SQL">
+    </form>
+    {% if sql_query %}
+        <h2>Generated SQL</h2>
+        <pre>{{ sql_query }}</pre>
+    {% endif %}
+</body>
+</html>
